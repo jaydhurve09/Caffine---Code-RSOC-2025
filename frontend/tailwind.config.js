@@ -9,8 +9,10 @@ export default {
       colors: {
         github: {
           dark: '#24292e',
-          light: '#f6f8fa'
-        }
+          light: '#f6f8fa',
+        },
+        accent: '#5d58ca',
+        accentDark: '#53c5ff',
       }
     },
   },

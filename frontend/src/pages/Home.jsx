@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getRepositoryData, calculateRepoHealth } from '../services/github';
 import Dashboard from './Dashboard';
 import heroImage from '../assets/image.png';
@@ -8,6 +8,12 @@ const HomePage = ({ onAnalyze }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [repoData, setRepoData] = useState(null);
+  const [analyzedCount, setAnalyzedCount] = useState(0);
+
+  useEffect(() => {
+    const count = localStorage.getItem('analyzedReposCount') || 0;
+    setAnalyzedCount(Number(count));
+  }, []);
 
   const handleAnalyze = async (e) => {
     e.preventDefault();
@@ -30,6 +36,11 @@ const HomePage = ({ onAnalyze }) => {
       // Pass repository data to parent component
       onAnalyze(data);
       
+      // Increment analyzed count
+      const newCount = analyzedCount + 1;
+      setAnalyzedCount(newCount);
+      localStorage.setItem('analyzedReposCount', newCount);
+      
     } catch (err) {
       setError(err.message);
     } finally {
@@ -44,7 +55,7 @@ const HomePage = ({ onAnalyze }) => {
       ) : (
         <div>
           {/* Header */}
-          <header className="bg-gray-900 text-white px-8">
+    <header className="bg-gray-900 bg-opacity-100 text-white px-8">
         <div className="container mx-auto px-8 py-6 ">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-3">
@@ -53,22 +64,30 @@ const HomePage = ({ onAnalyze }) => {
               </svg>
               <h1 className="text-2xl font-bold">GitInsight</h1>
             </div>
-            <nav>
+            {/* <nav>
               <ul className="flex space-x-6">
                 <li><a href="#" className="hover:text-blue-400">Home</a></li>
                 <li><a href="#" className="hover:text-blue-400">Features</a></li>
                 <li><a href="#" className="hover:text-blue-400">Docs</a></li>
                 <li><a href="#" className="hover:text-blue-400">About</a></li>
               </ul>
-            </nav>
+            </nav> */}
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="px-18 py-15 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+      <section className="px-18 py-15 bg-gray-900 text-white"
+      style={{
+        backgroundImage:         
+             'radial-gradient(circle at top, rgba(83, 197, 255, 0.4) 10%, rgba(5, 0, 26, 0.1) 50%)'
+        ,
+        backgroundBlendMode: 'normal'
+      }}
+      >
         <div className="container mx-auto px-4 max-w-7xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-items-center relative">
+            
             <div className="text-center md:text-left max-w-2xl">
               <h2 className="text-4xl font-bold mb-6">Analyze GitHub Repositories with Ease</h2>
               <p className="text-xl mb-10">Get comprehensive insights, code quality metrics, and contributor analytics for any public GitHub repository.</p>
@@ -83,7 +102,7 @@ const HomePage = ({ onAnalyze }) => {
                   />
                   <button
                     type="submit"
-                    className="bg-blue-600 hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition duration-200 flex items-center justify-center"
+                    className="bg-gradient-to-r from-accent to-accentDark hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition duration-200 flex items-center justify-center"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -97,6 +116,15 @@ const HomePage = ({ onAnalyze }) => {
                 </div>
                 {error && <p className="text-red-400 mt-2">{error}</p>}
               </form>
+              <div className="max-w-sm bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-[-50%] flex items-center space-x-3">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+              <div>
+                <p className="text-sm font-medium">Repositories Analyzed</p>
+                <p className="text-2xl font-bold">{analyzedCount}</p>
+              </div>
+            </div>
             </div>
             <div className="hidden md:block">
               <img src={heroImage} alt="Repository Analysis" className="w-full h-auto max-w-sm mx-auto dark:opacity-90 transform scale-x-[-1]" />
