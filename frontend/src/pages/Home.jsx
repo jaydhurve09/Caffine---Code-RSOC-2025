@@ -139,7 +139,7 @@ const HomePage = ({ onAnalyze }) => {
                     {error && <p className="text-red-400 mt-2">{error}</p>}
                   </form>
 
-                  <div className="mt-6 max-w-[200px] bg-gradient-to-r from-accent to-accentDark text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3">
+                  <div className="mt-6 max-w-[200px] bg-gray-900 border border-accentDark text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3">
                     <svg
                       className="w-6 h-6"
                       fill="none"

@@ -144,104 +144,87 @@ const Dashboard = ({ repoData }) => {
       </div>
     </div>
   </header>
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-2 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mt-4 sm:mt-8 grid grid-cols-1 gap-4 sm:gap-6">
-          <div className="grid grid-cols-2 gap-2">
-            {/* Issues Chart */}
-            <div className="bg-white shadow rounded-lg p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
-                Issues Status
-              </h3>
-              <div className="h-64 w-full flex justify-center">
-                <PieChart
-                  width={window.innerWidth < 640 ? 300 : 400}
-                  height={250}
-                >
-                  <Pie
-                    data={metrics.issueData}
-                    cx="50%"
-                    cy={125}
-                    innerRadius={window.innerWidth < 640 ? 45 : 60}
-                    outerRadius={window.innerWidth < 640 ? 65 : 80}
-                    fill="#8884d8"
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {metrics.issueData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-4 sm:py-6 lg:py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300">
+      <div className="max-w-7xl mx-auto space-y-6 sm:space-y-8">
+        {/* Repository Stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          {Object.entries(metrics.repoStats).map(([key, value]) => (
+            <div key={key} className="bg-white dark:bg-gray-800 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+              <div className="flex flex-col space-y-1 sm:space-y-2">
+                <h4 className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400 capitalize">{key}</h4>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-white">{value.toLocaleString()}</p>
               </div>
             </div>
+          ))}
+        </div>
 
-            {/* Pull Requests Chart */}
-            <div className="bg-white shadow rounded-lg p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
-                Pull Requests Status
-              </h3>
-              <div className="h-64 w-full flex justify-center">
-                <PieChart
-                  width={window.innerWidth < 640 ? 300 : 400}
-                  height={250}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+          {/* Issues Chart */}
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg sm:rounded-xl p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6">Issues Status</h3>
+            <div className="h-48 sm:h-64 w-full flex justify-center items-center">
+              <PieChart width={window.innerWidth < 640 ? 200 : 400} height={window.innerWidth < 640 ? 180 : 250}>
+                <Pie
+                  data={metrics.issueData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={window.innerWidth < 640 ? 35 : 60}
+                  outerRadius={window.innerWidth < 640 ? 55 : 80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
                 >
-                  <Pie
-                    data={metrics.prData}
-                    cx="50%"
-                    cy={125}
-                    innerRadius={window.innerWidth < 640 ? 45 : 60}
-                    outerRadius={window.innerWidth < 640 ? 65 : 80}
-                    fill="#8884d8"
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {metrics.prData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </div>
+                  {metrics.issueData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip wrapperStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '8px', padding: '8px' }} />
+                <Legend wrapperStyle={{ paddingTop: '20px' }} />
+              </PieChart>
             </div>
           </div>
 
-          <div className="">
-                    {/* Top Contributors Chart */}
-          <div className="bg-white shadow rounded-lg p-4 sm:p-6">
-            <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
-              Top Contributors
-            </h3>
-            <div className="h-64 w-full overflow-x-auto">
-              <BarChart
-                width={Math.max(window.innerWidth - 40, 600)}
-                height={250}
-                data={metrics.contributorData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="contributions" fill="#8884d8" />
-              </BarChart>
+          {/* Pull Requests Chart */}
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg sm:rounded-xl p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6">Pull Requests Status</h3>
+            <div className="h-48 sm:h-64 w-full flex justify-center items-center">
+              <PieChart width={window.innerWidth < 640 ? 200 : 400} height={window.innerWidth < 640 ? 180 : 250}>
+                <Pie
+                  data={metrics.prData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={window.innerWidth < 640 ? 35 : 60}
+                  outerRadius={window.innerWidth < 640 ? 55 : 80}
+                  fill="#8884d8"
+                  paddingAngle={5}
+                  dataKey="value"
+                >
+                  {metrics.prData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip wrapperStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '8px', padding: '8px' }} />
+                <Legend wrapperStyle={{ paddingTop: '20px' }} />
+              </PieChart>
             </div>
           </div>
+        </div>
 
-          {/* Contributors Grid */}
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4 sm:p-6">
-            <ContributorGrid contributors={repoData?.contributors || []} />
-          </div>
+        {/* Contributors Chart */}
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg sm:rounded-xl p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6">Top Contributors</h3>
+          <div className="h-48 sm:h-64 w-full overflow-x-auto">
+            <BarChart width={window.innerWidth < 640 ? window.innerWidth - 50 : 800} height={window.innerWidth < 640 ? 180 : 250} data={metrics.contributorData}>
+              <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip wrapperStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', borderRadius: '8px', padding: '8px' }} />
+              <Bar dataKey="contributions" fill="#8884d8">
+                {metrics.contributorData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Bar>
+            </BarChart>
           </div>
         </div>
       </div>
