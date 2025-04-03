@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { getRepositoryData, calculateRepoHealth } from '../services/github';
 import Dashboard from './Dashboard';
+import heroImage from '../assets/image.png';
 
 const HomePage = ({ onAnalyze }) => {
   const [repoUrl, setRepoUrl] = useState('');
@@ -65,38 +66,42 @@ const HomePage = ({ onAnalyze }) => {
       </header>
 
       {/* Hero Section */}
-      <section className="px-12 py-20 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-6">Analyze GitHub Repositories with Ease</h2>
-          <p className="text-xl mb-10 max-w-2xl mx-auto">
-            Get comprehensive insights, code quality metrics, and contributor analytics for any public GitHub repository.
-          </p>
-          
-          <form onSubmit={handleAnalyze} className="max-w-xl mx-auto">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <input
-                type="text"
-                placeholder="Enter GitHub repository URL"
-                className="flex-grow py-3 px-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={repoUrl}
-                onChange={(e) => setRepoUrl(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition duration-200 flex items-center justify-center"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : null}
-                {isLoading ? 'Analyzing...' : 'Analyze Repository'}
-              </button>
+      <section className="px-18 py-15 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+        <div className="container mx-auto px-4 max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center justify-items-center">
+            <div className="text-center md:text-left max-w-2xl">
+              <h2 className="text-4xl font-bold mb-6">Analyze GitHub Repositories with Ease</h2>
+              <p className="text-xl mb-10">Get comprehensive insights, code quality metrics, and contributor analytics for any public GitHub repository.</p>
+              <form onSubmit={handleAnalyze} className="max-w-xl">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <input
+                    type="text"
+                    placeholder="Enter GitHub repository URL"
+                    className="flex-grow py-3 px-4 rounded-lg text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    value={repoUrl}
+                    onChange={(e) => setRepoUrl(e.target.value)}
+                  />
+                  <button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 py-3 px-6 rounded-lg font-medium transition duration-200 flex items-center justify-center"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : null}
+                    {isLoading ? 'Analyzing...' : 'Analyze Repository'}
+                  </button>
+                </div>
+                {error && <p className="text-red-400 mt-2">{error}</p>}
+              </form>
             </div>
-            {error && <p className="text-red-400 mt-2">{error}</p>}
-          </form>
+            <div className="hidden md:block">
+              <img src={heroImage} alt="Repository Analysis" className="w-full h-auto max-w-sm mx-auto dark:opacity-90 transform scale-x-[-1]" />
+            </div>
+          </div>
         </div>
       </section>
 
