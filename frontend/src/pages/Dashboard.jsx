@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import ContributorGrid from '../components/ContributorGrid';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -245,6 +246,11 @@ const Dashboard = ({ repoData }) => {
                 <Bar dataKey="contributions" fill="#8884d8" />
               </BarChart>
             </div>
+          </div>
+
+          {/* Contributors Grid */}
+          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-6 lg:col-span-2">
+            <ContributorGrid contributors={repoData?.contributors || []} />
           </div>
         </div>
       </div>
