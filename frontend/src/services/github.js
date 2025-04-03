@@ -1,22 +1,44 @@
 import axios from 'axios';
-
-const GITHUB_API_BASE_URL = 'https://api.github.com';
+import { GITHUB_CONFIG } from '../config/github';
 
 const githubApi = axios.create({
-  baseURL: GITHUB_API_BASE_URL,
+  baseURL: GITHUB_CONFIG.API_BASE_URL,
   headers: {
-    'Accept': 'application/vnd.github.v3+json',
+    'Accept': GITHUB_CONFIG.ACCEPT_HEADER,
+    'Authorization': GITHUB_CONFIG.ACCESS_TOKEN ? `Bearer ${GITHUB_CONFIG.ACCESS_TOKEN}` : '',
   },
 });
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const fetchWithRetry = async (requestFn) => {
+  let retries = 0;
+  
+  while (retries < GITHUB_CONFIG.RATE_LIMIT.MAX_RETRIES) {
+    try {
+      return await requestFn();
+    } catch (error) {
+      if (error.response?.status === 403 && error.response?.headers['x-ratelimit-remaining'] === '0') {
+        if (retries === GITHUB_CONFIG.RATE_LIMIT.MAX_RETRIES - 1) {
+          throw new Error('GitHub API rate limit exceeded. Please add a GitHub token or try again later.');
+        }
+        await sleep(GITHUB_CONFIG.RATE_LIMIT.RETRY_DELAY);
+        retries++;
+        continue;
+      }
+      throw error;
+    }
+  }
+};
 
 export const getRepositoryData = async (owner, repo) => {
   try {
     const [repoData, issuesData, pullsData, commitsData, contributorsData] = await Promise.all([
-      githubApi.get(`/repos/${owner}/${repo}`),
-      githubApi.get(`/repos/${owner}/${repo}/issues?state=all`),
-      githubApi.get(`/repos/${owner}/${repo}/pulls?state=all`),
-      githubApi.get(`/repos/${owner}/${repo}/commits`),
-      githubApi.get(`/repos/${owner}/${repo}/contributors`)
+      fetchWithRetry(() => githubApi.get(`/repos/${owner}/${repo}`)),
+      fetchWithRetry(() => githubApi.get(`/repos/${owner}/${repo}/issues?state=all`)),
+      fetchWithRetry(() => githubApi.get(`/repos/${owner}/${repo}/pulls?state=all`)),
+      fetchWithRetry(() => githubApi.get(`/repos/${owner}/${repo}/commits`)),
+      fetchWithRetry(() => githubApi.get(`/repos/${owner}/${repo}/contributors`))
     ]);
 
     return {
@@ -27,10 +49,10 @@ export const getRepositoryData = async (owner, repo) => {
       contributors: contributorsData.data
     };
   } catch (error) {
-    if (error.response?.status === 403) {
-      throw new Error('GitHub API rate limit exceeded. Please try again later.');
+    if (error.response?.status === 404) {
+      throw new Error('Repository not found. Please check the URL and try again.');
     }
-    throw new Error('Failed to fetch repository data');
+    throw error;
   }
 };
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import ContributorGrid from '../components/ContributorGrid';
+import ReportDownload from '../components/ReportDownload';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -182,6 +183,7 @@ const Dashboard = ({ repoData }) => {
           </div>
         </div>
       </div>
+      <ReportDownload repoData={repoData} />
     </div>
   );
 };
