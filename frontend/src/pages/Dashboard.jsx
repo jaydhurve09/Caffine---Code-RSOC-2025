@@ -133,14 +133,12 @@ const Dashboard = ({ repoData }) => {
           </svg>
           <h1 className="text-2xl font-bold">GitInsight</h1>
         </div>
-        {/* <nav>
-          <ul className="flex space-x-6">
-            <li><a href="#" className="hover:text-blue-400">Home</a></li>
-            <li><a href="#" className="hover:text-blue-400">Features</a></li>
-            <li><a href="#" className="hover:text-blue-400">Docs</a></li>
-            <li><a href="#" className="hover:text-blue-400">About</a></li>
-          </ul>
-        </nav> */}
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+        >
+          Back to Home
+        </button>
       </div>
     </div>
   </header>
@@ -227,6 +225,11 @@ const Dashboard = ({ repoData }) => {
             </BarChart>
           </div>
         </div>
+a 
+        {/* Contributors Grid */}
+        {repoData?.contributors && (
+          <ContributorGrid contributors={repoData.contributors} />
+        )}
       </div>
     </div>
     </div>
